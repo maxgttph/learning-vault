@@ -18,8 +18,8 @@ related: ["[[transformer-architecture]]", "[[attention-mechanism]]"]
 - **Token** — unité de base manipulée par un LLM, typiquement un sous-mot (entre une lettre et un mot complet).
 - **Tokenizer** — algorithme qui découpe le texte brut. Entraîné séparément, en amont du modèle. Figé ensuite.
 - **BPE (Byte Pair Encoding)** — fusionne itérativement les paires de caractères les plus fréquentes. Utilisé par GPT, Llama.
-- **Matrice d'embedding** — table de lookup `|vocab| × d_model`, **apprise** comme tous les autres poids.
-- **Un-embedding** — matrice `d_model × |vocab|` qui projette la sortie du modèle sur les scores du vocabulaire. Souvent partagée avec l'embedding.
+- **Matrice d'embedding** — table de lookup $|\text{vocab}| \times d_{\text{model}}$, **apprise** comme tous les autres poids.
+- **Un-embedding** — matrice $d_{\text{model}} \times |\text{vocab}|$ qui projette la sortie du modèle sur les scores du vocabulaire. Souvent partagée avec l'embedding.
 
 ## Deep dive
 
@@ -34,25 +34,25 @@ Le tokenizer est entraîné AVANT le modèle, séparément, à partir du corpus.
 
 ### L'embedding est juste un lookup
 
-Une matrice `E` de taille `|vocab| × d_model`. Pour `d_model = 8192` et 128k de vocabulaire : ~1 milliard de paramètres rien que pour cette matrice.
+Une matrice $E$ de taille $|\text{vocab}| \times d_{\text{model}}$. Pour $d_{\text{model}} = 8192$ et 128k de vocabulaire : ~1 milliard de paramètres rien que pour cette matrice.
 
-Le token d'ID 42 → ligne 42 de `E`. **Pas de calcul, juste de la lecture.**
+Le token d'ID 42 → ligne 42 de $E$. **Pas de calcul, juste de la lecture.**
 
 **Point crucial** : personne ne décide qui correspond à quoi.
-- La matrice est **initialisée aléatoirement** (gaussienne `N(0, 0.02)`).
+- La matrice est **initialisée aléatoirement** (gaussienne $\mathcal{N}(0,\ 0.02)$).
 - Elle est **entraînée par rétropropagation** comme tous les autres poids.
 
 À la fin de l'entraînement, des propriétés émergent automatiquement :
 - Mots de contextes similaires → vecteurs géométriquement proches.
-- "Paris" − "France" ≈ "Berlin" − "Allemagne" (arithmétique vectorielle célèbre).
+- $\text{Paris} - \text{France} \approx \text{Berlin} - \text{Allemagne}$ (arithmétique vectorielle célèbre).
 
 C'est de l'auto-organisation pure, dirigée par la pression d'optimisation de la loss (prédire le token suivant).
 
 ### L'un-embedding ferme la boucle
 
-À la fin du forward pass, on a un vecteur de dimension `d_model` (la représentation finale du dernier token). On le multiplie par une matrice `d_model × |vocab|`, ce qui donne un **logit par token possible** dans le vocabulaire. Un softmax transforme ça en distribution de probabilités → on échantillonne le prochain token.
+À la fin du forward pass, on a un vecteur de dimension $d_{\text{model}}$ (la représentation finale du dernier token). On le multiplie par une matrice $d_{\text{model}} \times |\text{vocab}|$, ce qui donne un **logit par token possible** dans le vocabulaire. Un softmax transforme ça en distribution de probabilités → on échantillonne le prochain token.
 
-**Astuce courante** : beaucoup de modèles (GPT-2, certains Llama) **partagent** les poids entre embedding et un-embedding (`E` et `Eᵀ`). Économise des paramètres et a une justification théorique (symétrie de l'opération encoder/decoder de tokens).
+**Astuce courante** : beaucoup de modèles (GPT-2, certains Llama) **partagent** les poids entre embedding et un-embedding ($E$ et $E^\top$). Économise des paramètres et a une justification théorique (symétrie de l'opération encoder/decoder de tokens).
 
 ### Pourquoi un changement de tokenizer casse tout
 

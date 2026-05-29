@@ -17,13 +17,13 @@ related: ["[[transformer-architecture]]", "[[embeddings-and-tokenization]]", "[[
 
 ### Matrices apprises (paramètres figés après entraînement)
 
-- **W_Q, W_K, W_V** — trois matrices `d_model × d_k` qui projettent chaque embedding dans trois espaces différents. Identiques par nature (même forme, même initialisation, même algorithme de mise à jour). Leurs rôles distincts viennent de leur **position dans la formule**, pas d'une propriété intrinsèque.
-- **W_O** — quatrième matrice (typiquement `d_model × d_model`). Joue dans une équipe à part : n'intervient **pas** dans le routage, seulement dans le post-traitement.
+- **W_Q, W_K, W_V** — trois matrices $d_{\text{model}} \times d_k$ qui projettent chaque embedding dans trois espaces différents. Identiques par nature (même forme, même initialisation, même algorithme de mise à jour). Leurs rôles distincts viennent de leur **position dans la formule**, pas d'une propriété intrinsèque.
+- **W_O** — quatrième matrice (typiquement $d_{\text{model}} \times d_{\text{model}}$). Joue dans une équipe à part : n'intervient **pas** dans le routage, seulement dans le post-traitement.
 
 ### Vecteurs calculés à la volée (activations transitoires)
 
-- **Q, K, V** — pour chaque token, vecteurs obtenus en appliquant les matrices W_* à son embedding. `Q` = "ce que je cherche", `K` = "mon étiquette publique", `V` = "ce que je transmets".
-- **Scores et A** — matrice `n × n` des similarités entre chaque paire de tokens, puis sa normalisation en distribution.
+- **Q, K, V** — pour chaque token, vecteurs obtenus en appliquant les matrices $W_*$ à son embedding. $Q$ = "ce que je cherche", $K$ = "mon étiquette publique", $V$ = "ce que je transmets".
+- **Scores et A** — matrice $n \times n$ des similarités entre chaque paire de tokens, puis sa normalisation en distribution.
 
 ### Concepts supplémentaires
 
@@ -38,10 +38,10 @@ related: ["[[transformer-architecture]]", "[[embeddings-and-tokenization]]", "[[
 
 | Notation | C'est quoi | Statut |
 |---|---|---|
-| `W_Q`, `W_K`, `W_V`, `W_O` | Matrices de poids apprises | Paramètres figés après entraînement |
-| `Q`, `K`, `V` | Vecteurs calculés à la volée pour chaque token | Activations transitoires, recalculées à chaque inférence |
+| $W_Q$, $W_K$, $W_V$, $W_O$ | Matrices de poids apprises | Paramètres figés après entraînement |
+| $Q$, $K$, $V$ | Vecteurs calculés à la volée pour chaque token | Activations transitoires, recalculées à chaque inférence |
 
-Les `W_*` vivent dans le fichier `.safetensors`. Les `Q, K, V` n'existent qu'à l'instant où le token traverse la couche. À retenir : **les matrices sont les paramètres, les vecteurs sont les activations**.
+Les $W_*$ vivent dans le fichier `.safetensors`. Les $Q, K, V$ n'existent qu'à l'instant où le token traverse la couche. À retenir : **les matrices sont les paramètres, les vecteurs sont les activations**.
 
 ### Analogie de la bibliothèque
 
@@ -54,27 +54,33 @@ L'attention fait exactement ça, sauf que :
 
 ### La recette mathématique pas-à-pas
 
-Pour une séquence `X` (chaque ligne = un token) :
+Pour une séquence $X$ (chaque ligne = un token) :
 
-```
-Étape 1 — projeter (3 matrices en parallèle)
-  Q = X · W_Q       ← un vecteur Q par token
-  K = X · W_K       ← un vecteur K par token
-  V = X · W_V       ← un vecteur V par token
+**Étape 1 — projeter** (3 matrices en parallèle, un vecteur Q/K/V par token) :
 
-Étape 2 — scores de similarité
-  scores = Q · Kᵀ / √d_k        ← matrice n × n
-  scores[i][j] = "à quel point le token i s'intéresse au token j"
+$$Q = X\, W_Q \qquad K = X\, W_K \qquad V = X\, W_V$$
 
-Étape 3 — masque causal + softmax
-  A = softmax(scores + masque)  ← chaque ligne = distribution
+**Étape 2 — scores de similarité** (matrice $n \times n$) :
 
-Étape 4 — mélange pondéré des contenus
-  mixed = A · V                 ← chaque ligne i = combinaison des V_j selon A_ij
+$$\text{scores} = \frac{Q\, K^\top}{\sqrt{d_k}}$$
 
-Étape 5 — projection finale
-  out = mixed · W_O             ← post-traitement, retour vers d_model
-```
+où $\text{scores}_{ij}$ mesure « à quel point le token $i$ s'intéresse au token $j$ ».
+
+**Étape 3 — masque causal + softmax** (chaque ligne devient une distribution) :
+
+$$A = \text{softmax}(\text{scores} + \text{masque})$$
+
+**Étape 4 — mélange pondéré des contenus** (chaque ligne $i$ = combinaison des $V_j$ pondérée par $A_{ij}$) :
+
+$$\text{mixed} = A\, V$$
+
+**Étape 5 — projection finale** (post-traitement, retour vers $d_{\text{model}}$) :
+
+$$\text{out} = \text{mixed} \cdot W_O$$
+
+Sous forme compacte, c'est la formule canonique de *Attention Is All You Need* :
+
+$$\text{Attention}(Q, K, V) = \text{softmax}\!\left(\frac{Q\, K^\top}{\sqrt{d_k}}\right) V$$
 
 ### Pourquoi les rôles diffèrent si les matrices sont identiques
 
@@ -84,11 +90,11 @@ Réponse : **deux mécanismes complémentaires**.
 
 **1. L'asymétrie structurelle (position dans la formule)**
 
-- **W_Q vs W_K** : leurs sorties se rencontrent dans `Q · Kᵀ`. Mais Q est à gauche, K transposée à droite. Conséquence :
-  ```
-  score[i][j] = Q_i · K_j
-  ```
-  Ce produit **n'est pas symétrique** : `score[i][j] ≠ score[j][i]` en général. D'où la distinction "qui écoute / qui est écouté" — encodée dans la position **gauche/droite** du produit, pas dans les matrices.
+- **W_Q vs W_K** : leurs sorties se rencontrent dans $Q\, K^\top$. Mais Q est à gauche, K transposée à droite. Conséquence :
+
+  $$\text{score}_{ij} = Q_i \cdot K_j$$
+
+  Ce produit **n'est pas symétrique** : $\text{score}_{ij} \neq \text{score}_{ji}$ en général. D'où la distinction "qui écoute / qui est écouté" — encodée dans la position **gauche/droite** du produit, pas dans les matrices.
 
 - **W_V vs W_Q/W_K** : la sortie de W_V n'apparaît **qu'après** le softmax, multipliée par A. Elle ne participe pas du tout au calcul des scores. C'est cette position-là qui en fait "le contenu transmis" et non "le filtre du routage".
 
@@ -96,13 +102,13 @@ Réponse : **deux mécanismes complémentaires**.
 
 Pendant l'entraînement, chaque matrice reçoit son gradient via le chemin où sa sortie est utilisée :
 
-- `W_V` reçoit `Loss → mixed = A·V → V → W_V`.
+- $W_V$ reçoit $\text{Loss} \to \text{mixed} = A V \to V \to W_V$.
   Message du gradient : *"modifie-toi pour que le contenu mélangé soit utile en sortie."*
 
-- `W_Q` reçoit `Loss → mixed → A → softmax → scores → Q → W_Q`.
+- $W_Q$ reçoit $\text{Loss} \to \text{mixed} \to A \to \text{softmax} \to \text{scores} \to Q \to W_Q$.
   Message du gradient : *"modifie-toi pour que les scores produisent un meilleur routage."*
 
-- `W_K` : idem que W_Q, par le chemin symétrique côté K.
+- $W_K$ : idem que $W_Q$, par le chemin symétrique côté K.
 
 Les matrices partent identiques (du bruit gaussien). Mais comme la pression de gradient est différente sur chacune, **elles divergent par spécialisation forcée**. Au jour 0, indiscernables. Au jour N, expertes dans leur rôle structurel.
 
@@ -112,8 +118,8 @@ Les matrices partent identiques (du bruit gaussien). Mais comme la pression de g
 
 Techniquement, W_O est une matrice apprise comme les trois autres. Mais conceptuellement :
 
-- `W_Q, W_K, W_V` **participent au mécanisme d'attention proprement dit** — elles décident qui écoute qui et avec quel contenu.
-- `W_O` est **après** l'attention. Si on remplaçait W_O par l'identité, l'attention fonctionnerait toujours (les tokens s'écouteraient correctement), juste le résultat sortirait dans un espace non recombiné. Alors que sans W_V, il n'y aurait littéralement rien à transmettre. Sans W_Q ou W_K, le routage serait cassé.
+- $W_Q, W_K, W_V$ **participent au mécanisme d'attention proprement dit** — elles décident qui écoute qui et avec quel contenu.
+- $W_O$ est **après** l'attention. Si on remplaçait $W_O$ par l'identité, l'attention fonctionnerait toujours (les tokens s'écouteraient correctement), juste le résultat sortirait dans un espace non recombiné. Alors que sans $W_V$, il n'y aurait littéralement rien à transmettre. Sans $W_Q$ ou $W_K$, le routage serait cassé.
 
 Partition plus honnête :
 - **Phase de routage** : W_Q, W_K, W_V
@@ -121,7 +127,7 @@ Partition plus honnête :
 
 W_O joue principalement deux rôles :
 1. **Recoller les têtes** en multi-head — les sorties des N têtes concaténées sont mélangées entre elles par W_O.
-2. **Reprojeter** dans la dimension `d_model` du flux résiduel.
+2. **Reprojeter** dans la dimension $d_{\text{model}}$ du flux résiduel.
 
 La convention "Q, K, V, O" est gardée car les 4 sont structurellement similaires en code, mais il est utile de savoir que W_O joue dans une équipe différente.
 
@@ -136,9 +142,9 @@ Exemple : dans "Le chat que Marie a adopté hier dort", quand le modèle traite 
 
 ### Multi-head : plusieurs spécialistes en parallèle
 
-Pour Llama 3 70B : `d_model = 8192`, 64 têtes de dimension `d_k = 128`. Chaque tête a ses propres W_Q, W_K, W_V, et apprend un type de relation différent : références anaphoriques, syntaxe sujet-verbe, négation, contrastes, etc. Les sorties des têtes sont concaténées, puis W_O les recombine.
+Pour Llama 3 70B : $d_{\text{model}} = 8192$, 64 têtes de dimension $d_k = 128$. Chaque tête a ses propres W_Q, W_K, W_V, et apprend un type de relation différent : références anaphoriques, syntaxe sujet-verbe, négation, contrastes, etc. Les sorties des têtes sont concaténées, puis W_O les recombine.
 
-Une couche d'attention contient donc 4 matrices `8192 × 8192` ≈ 270M paramètres. Sur 80 couches ≈ 21 milliards pour l'attention seule.
+Une couche d'attention contient donc 4 matrices $8192 \times 8192 \approx 270\text{M}$ paramètres. Sur 80 couches $\approx 21$ milliards pour l'attention seule.
 
 ## Examples & analogies
 
@@ -151,7 +157,7 @@ Une couche d'attention contient donc 4 matrices `8192 × 8192` ≈ 270M paramèt
 - Comment interpréter mécaniquement ce que chaque tête a appris ? (mechanistic interpretability)
 - Quelles alternatives à l'attention quadratique sont viables ? (linear attention, sliding window, sparse, state-space)
 - Pourquoi le multi-head fonctionne-t-il mieux qu'une seule grosse tête ? Régularisation ? Diversité des routages appris ?
-- Que se passe-t-il si on initialise W_Q = W_K = W_V à des valeurs **exactement identiques** (pas juste de même distribution) ? La symétrie est-elle brisée par le bruit du SGD au premier pas ?
+- Que se passe-t-il si on initialise $W_Q = W_K = W_V$ à des valeurs **exactement identiques** (pas juste de même distribution) ? La symétrie est-elle brisée par le bruit du SGD au premier pas ?
 
 ## Related notes
 

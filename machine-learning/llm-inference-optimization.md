@@ -11,7 +11,7 @@ related: ["[[attention-mechanism]]", "[[transformer-architecture]]"]
 
 ## TL;DR
 
-> L'inférence d'un LLM est dominée par la **mémoire**, pas le compute. Le **KV cache** évite de recalculer les vecteurs K et V des tokens passés à chaque génération, ramenant le coût par token de `O(n²)` à `O(n)`. **TurboQuant** (Google, ICLR 2026) compresse ce cache 6× sans perte mesurable et sans réentraînement.
+> L'inférence d'un LLM est dominée par la **mémoire**, pas le compute. Le **KV cache** évite de recalculer les vecteurs K et V des tokens passés à chaque génération, ramenant le coût par token de $O(n^2)$ à $O(n)$. **TurboQuant** (Google, ICLR 2026) compresse ce cache 6× sans perte mesurable et sans réentraînement.
 
 ## Key concepts
 
@@ -26,15 +26,15 @@ related: ["[[attention-mechanism]]", "[[transformer-architecture]]"]
 
 ### Le problème
 
-Pour générer le token `N+1`, [[attention-mechanism|l'attention]] doit regarder tous les tokens `1..N`. Naïvement, il faut recalculer K et V pour chacun de ces tokens à chaque pas de génération → coût `O(n²)` par token, donc `O(n³)` pour générer `n` tokens. Catastrophique sur de longs contextes.
+Pour générer le token $N+1$, [[attention-mechanism|l'attention]] doit regarder tous les tokens $1 \ldots N$. Naïvement, il faut recalculer K et V pour chacun de ces tokens à chaque pas de génération → coût $O(n^2)$ par token, donc $O(n^3)$ pour générer $n$ tokens. Catastrophique sur de longs contextes.
 
 ### La solution : KV cache
 
 Observation clé : grâce au **masque causal**, les K et V des tokens passés **ne dépendent pas du nouveau token** — un token passé ne change pas avec ce qui vient après. On peut donc les mémoriser :
 
-- Pour le token `N+1` : on calcule seulement son `Q`, `K`, `V` (et on ajoute K, V au cache).
+- Pour le token $N+1$ : on calcule seulement son $Q$, $K$, $V$ (et on ajoute K, V au cache).
 - L'attention du nouveau Q se fait contre **tout le cache existant**.
-- Coût par token : **`O(n)`** au lieu de `O(n²)`.
+- Coût par token : $O(n)$ au lieu de $O(n^2)$.
 
 Pour générer 1000 tokens avec un contexte de 10 000, c'est la différence entre des secondes et des heures.
 
@@ -57,7 +57,7 @@ Compresse le KV cache à **3 bits par élément** (vs 16 bits en FP16) → rédu
 
 **Comment ça marche** (deux étapes) :
 
-1. **PolarQuant** (AISTATS 2026, première brique) — applique une **rotation orthogonale aléatoire** aux vecteurs K et V avant quantification. Pourquoi : les quantifieurs scalaires "MSE-optimaux" classiques introduisent un biais systématique dans l'estimation du produit scalaire `Q·Kᵀ` — or c'est exactement ce dont l'attention a besoin. La rotation aléatoire répartit l'erreur dans toutes les directions, éliminant le biais.
+1. **PolarQuant** (AISTATS 2026, première brique) — applique une **rotation orthogonale aléatoire** aux vecteurs K et V avant quantification. Pourquoi : les quantifieurs scalaires "MSE-optimaux" classiques introduisent un biais systématique dans l'estimation du produit scalaire $Q \cdot K^\top$ — or c'est exactement ce dont l'attention a besoin. La rotation aléatoire répartit l'erreur dans toutes les directions, éliminant le biais.
 
 2. **Correction QJL 1-bit** — quantifie le résidu (erreur restante) sur 1 bit supplémentaire, rapprochant encore plus de la valeur d'origine.
 

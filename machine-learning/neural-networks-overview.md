@@ -11,7 +11,7 @@ related: ["[[how-neural-networks-train]]", "[[transformer-architecture]]"]
 
 ## TL;DR
 
-> Un réseau de neurones est une fonction paramétrée `f(x ; θ)` qui transforme des nombres en nombres via une cascade de multiplications matricielles et de non-linéarités. Ses milliards de paramètres `θ` ne sont pas codés à la main mais appris par descente de gradient sur des données.
+> Un réseau de neurones est une fonction paramétrée $f(x;\, \theta)$ qui transforme des nombres en nombres via une cascade de multiplications matricielles et de non-linéarités. Ses milliards de paramètres $\theta$ ne sont pas codés à la main mais appris par descente de gradient sur des données.
 
 ## Key concepts
 

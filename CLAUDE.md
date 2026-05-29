@@ -59,6 +59,16 @@ Use `_templates/learning-sheet.md` as the structural skeleton. Fill it in by **s
 - **Open questions**: things worth a future sheet or further reading.
 - **Related notes**: mirror the frontmatter `related` list as visible `[[wiki-links]]`.
 
+## Math & formulas
+
+**Always write mathematical formulas in LaTeX** — Obsidian renders MathJax natively. Never put equations in code blocks (``` ```) or inline backticks: those stay as unrendered monospace text and are hard to read.
+
+- **Inline math**: single dollars — `$d_{\text{model}} \times d_k$`, `$O(n^2)$`, `$x + f(x)$`.
+- **Block math** (centered, own line): double dollars — `$$\text{Attention}(Q,K,V) = \text{softmax}\!\left(\frac{Q K^\top}{\sqrt{d_k}}\right) V$$`.
+- This covers **any** mathematical notation, including subscripts/superscripts (`$d_{\text{model}}$`, `$10^{13}$`), complexity (`$O(n^2)$`), Greek letters (`$\eta$`, `$\theta$`), operators (`$\cdot$`, `$\times$`, `$\odot$`, `$\top$`), and single variables in a math context (`$Q$`, `$W_Q$`, `$E^\top$`).
+- Use `\text{...}` for function names and labels inside math (`$\text{softmax}$`, `$\text{ReLU}$`).
+- **Keep in code blocks only what is NOT a formula**: ASCII flow diagrams (pipelines, layer anatomy), filenames (`.safetensors`), and code identifiers. Monospace is correct there.
+
 ## Linking discipline
 
 Wiki-links build the knowledge graph over time. Before saving a new note:
@@ -83,5 +93,6 @@ Wiki-link format: `[[filename-without-extension]]` (Obsidian's default short-for
 - Don't auto-generate MOCs, dashboards, or index pages (out of current scope).
 - Don't add Obsidian callouts (`> [!note]`) — out of scope.
 - Don't add Dataview queries — out of scope.
+- Don't write formulas in code blocks or backticks — use LaTeX (`$...$` / `$$...$$`). See "Math & formulas".
 - Don't commit changes unless the user asks.
 - Don't write notes inside `_templates/` or `_index/`.

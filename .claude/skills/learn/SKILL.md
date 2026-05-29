@@ -46,6 +46,8 @@ Use the template structure. Fill every section with synthesized content (not cha
 
 Mirror `related` frontmatter into the `## Related notes` body section as visible `[[wiki-links]]`.
 
+**Formulas**: write all math in LaTeX (`$...$` inline, `$$...$$` block) — never in code blocks or backticks. See "Math & formulas" in `CLAUDE.md`. Code blocks are reserved for ASCII diagrams, filenames, and code.
+
 ### 6. Back-link bidirectionally
 
 For each note linked in step 4:
@@ -67,6 +69,7 @@ Tell the user:
 - Does not generate MOCs / index pages.
 - Does not ask the user for filename or folder — decide based on rules.
 - Does not add Obsidian callouts or Dataview blocks.
+- Does not put formulas in code blocks/backticks — math goes in LaTeX.
 
 ## Edge cases
 

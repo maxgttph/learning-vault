@@ -25,6 +25,8 @@ related: []
 
 Prose explanation. Keep it durable and self-contained — a future reader (you, in six months) should understand without re-reading the original conversation.
 
+Write any math in LaTeX, never in code blocks: inline `$d_{\text{model}} \times d_k$`, block `$$\text{softmax}\!\left(\frac{Q K^\top}{\sqrt{d_k}}\right) V$$`. Code blocks are only for ASCII diagrams, filenames, and code.
+
 ### Sub-topic 2
 
 More prose.
