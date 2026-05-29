@@ -4,7 +4,7 @@ aliases: ["RNN", "LSTM", "GRU", "réseaux récurrents"]
 tags: [machine-learning, rnn, lstm, sequences, gradient]
 created: 2026-05-29
 source: conversation with Claude
-related: ["[[neural-networks-overview]]", "[[how-neural-networks-train]]", "[[transformer-architecture]]", "[[attention-mechanism]]", "[[embeddings-and-tokenization]]"]
+related: ["[[neural-networks-overview]]", "[[how-neural-networks-train]]", "[[transformer-architecture]]", "[[attention-mechanism]]", "[[embeddings-and-tokenization]]", "[[reinforcement-learning]]"]
 ---
 
 # Réseaux récurrents (RNN) et LSTM
@@ -139,3 +139,4 @@ Depuis 2017, les [[transformer-architecture|Transformers]] ont largement supplan
 - [[transformer-architecture]]
 - [[attention-mechanism]]
 - [[embeddings-and-tokenization]]
+- [[reinforcement-learning]]

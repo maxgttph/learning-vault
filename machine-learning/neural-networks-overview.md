@@ -4,7 +4,7 @@ aliases: ["réseaux de neurones", "neural networks"]
 tags: [machine-learning, neural-networks, fundamentals]
 created: 2026-05-26
 source: conversation with Claude
-related: ["[[how-neural-networks-train]]", "[[transformer-architecture]]", "[[recurrent-networks-and-lstm]]"]
+related: ["[[how-neural-networks-train]]", "[[transformer-architecture]]", "[[recurrent-networks-and-lstm]]", "[[reinforcement-learning]]"]
 ---
 
 # Neural Networks — Vue d'ensemble
@@ -87,3 +87,4 @@ Selon le cas, d'autres méthodes sont meilleures :
 - [[how-neural-networks-train]]
 - [[transformer-architecture]]
 - [[recurrent-networks-and-lstm]]
+- [[reinforcement-learning]]
