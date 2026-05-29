@@ -4,7 +4,7 @@ aliases: ["embedding", "tokenizer", "BPE"]
 tags: [machine-learning, embeddings, tokenizer, llm]
 created: 2026-05-26
 source: conversation with Claude
-related: ["[[transformer-architecture]]", "[[attention-mechanism]]"]
+related: ["[[transformer-architecture]]", "[[attention-mechanism]]", "[[recurrent-networks-and-lstm]]"]
 ---
 
 # Embeddings et tokenization
@@ -82,3 +82,4 @@ Sans information de position, l'attention traiterait "le chat dort" et "dort le 
 
 - [[transformer-architecture]]
 - [[attention-mechanism]]
+- [[recurrent-networks-and-lstm]]
