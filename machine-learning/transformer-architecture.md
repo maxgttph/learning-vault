@@ -6,7 +6,6 @@ created: 2026-05-26
 source: conversation with Claude
 related: ["[[neural-networks-overview]]", "[[how-neural-networks-train]]", "[[attention-mechanism]]", "[[embeddings-and-tokenization]]", "[[llm-inference-optimization]]"]
 ---
-
 # L'architecture Transformer
 
 ## TL;DR
@@ -16,7 +15,7 @@ related: ["[[neural-networks-overview]]", "[[how-neural-networks-train]]", "[[at
 ## Key concepts
 
 - **Couche de Transformer** — sous-bloc identique, répété 32 à 100+ fois. Contient une attention + un MLP, avec normalisations et résiduels autour.
-- **Connexion résiduelle** — `x + f(x)` au lieu de `f(x)`. Stabilise l'entraînement et permet au gradient de remonter facilement.
+- **Connexion résiduelle** — $x + f(x)$ au lieu de $f(x)$. Stabilise l'entraînement et permet au gradient de remonter facilement.
 - **LayerNorm** — normalise les activations couche par couche pour éviter les explosions/extinctions.
 - **MLP / FFN** — bloc Feed-Forward où vivent ~60–70 % des paramètres. Mémoire associative qui stocke les "faits" du modèle.
 
@@ -62,21 +61,22 @@ Différence clé avec l'attention :
 - **MLP** transforme chaque token **indépendamment**.
 
 Forme classique (GPT-2, BERT) :
-```
-y = W_down · activation(W_up · x + b)
-```
-Dimension cachée typique : `4 × d_model`. Activations : GELU, SiLU.
+
+$$y = W_{\text{down}} \cdot \text{activation}(W_{\text{up}} \cdot x + b)$$
+
+Dimension cachée typique : $4 \times d_{\text{model}}$. Activations : GELU, SiLU.
 
 Forme moderne (Llama, SwiGLU) :
-```
-y = W_down · ( SiLU(W_gate · x) ⊙ (W_up · x) )
-```
+
+$$y = W_{\text{down}} \cdot \big(\, \text{SiLU}(W_{\text{gate}} \cdot x) \;\odot\; (W_{\text{up}} \cdot x) \,\big)$$
+
+(où $\odot$ est le produit terme à terme, *element-wise*.)
 
 La recherche récente suggère que les MLP fonctionnent comme une **mémoire associative géante** : chaque neurone caché détecte un motif particulier et active une réponse. C'est là que les "faits" vivent ("Paris est la capitale de la France"), pas dans l'attention.
 
 ### Pourquoi plusieurs couches
 
-- **Sans non-linéarité entre, plusieurs couches valent une seule** : `W₂ · (W₁ · x) = (W₂ · W₁) · x = W' · x`. Sans ReLU/GELU/SiLU intercalés, GPT-4 serait une régression linéaire.
+- **Sans non-linéarité entre, plusieurs couches valent une seule** : $W_2 \cdot (W_1 \cdot x) = (W_2 \cdot W_1) \cdot x = W' \cdot x$. Sans ReLU/GELU/SiLU intercalés, GPT-4 serait une régression linéaire.
 - **Composition d'opérations** : 32 couches = 32 étapes successives de raffinement.
 - **Hiérarchisation observée empiriquement** : couches basses → syntaxe, milieu → sémantique, hautes → tâche-spécifique.
 - **Profondeur de calcul** = profondeur de raisonnement disponible.
