@@ -87,6 +87,14 @@ La recherche récente suggère que les MLP fonctionnent comme une **mémoire ass
 - **Dépendances longues sans dégradation** — n'importe quel token peut regarder n'importe quel autre directement via [[attention-mechanism|l'attention]], peu importe la distance.
 - **Scaling laws** — performance prévisible avec la taille. A justifié les investissements massifs.
 
+### La contrepartie du parallélisme : l'encodage positionnel
+
+Traiter tous les tokens « d'un coup » a un prix caché. L'attention calcule des scores entre paires de tokens via $Q\,K^\top$, mais cette opération **ne contient aucune notion d'ordre** : permuter les tokens en entrée ne fait que permuter les sorties (l'attention est *permutation-équivariante*). Pour elle, « le chat mange la souris » et « la souris mange le chat » sont **indiscernables**.
+
+Un [[recurrent-networks-and-lstm|RNN]] n'a pas ce problème : il connaît l'ordre **gratuitement**, parce qu'il parcourt les mots un par un — la position est implicite dans le déroulé de la boucle. Le Transformer, lui, a sacrifié ce parcours séquentiel pour gagner la parallélisation ; il doit donc **réinjecter l'information de position artificiellement**, via l'encodage positionnel (sinusoïdal à l'origine, **RoPE** dans les LLM modernes).
+
+C'est une vraie subtilité structurelle, pas un détail d'implémentation : l'encodage positionnel n'existe **que** parce que l'attention est aveugle à l'ordre. Pas de récurrence ⇒ il faut dire explicitement au modèle « ce token est en position 5 ».
+
 ### Répartition typique des paramètres
 
 | Composant | Part des paramètres |

@@ -4,7 +4,7 @@ aliases: ["RNN", "LSTM", "GRU", "réseaux récurrents"]
 tags: [machine-learning, rnn, lstm, sequences, gradient]
 created: 2026-05-29
 source: conversation with Claude
-related: ["[[neural-networks-overview]]", "[[how-neural-networks-train]]", "[[transformer-architecture]]", "[[attention-mechanism]]", "[[embeddings-and-tokenization]]", "[[reinforcement-learning]]"]
+related: ["[[neural-networks-overview]]", "[[how-neural-networks-train]]", "[[transformer-architecture]]", "[[attention-mechanism]]", "[[embeddings-and-tokenization]]", "[[llm-inference-optimization]]", "[[reinforcement-learning]]"]
 ---
 
 # Réseaux récurrents (RNN) et LSTM
@@ -117,6 +117,23 @@ La seule limite est **molle** : la mémoire du début s'estompe (vanishing gradi
 
 **Les plus utilisés** : LSTM et GRU (workhorses), Bi-LSTM (longtemps standard NLP avant 2018), Seq2Seq + attention.
 
+### RNN vs Transformer : la comparaison frontale
+
+La vraie différence n'est pas « l'attention en plus » — c'est un choix opposé sur **comment traiter une séquence**, dont tout le reste découle.
+
+| Critère | RNN / LSTM | [[transformer-architecture\|Transformer]] |
+|---|---|---|
+| Traitement | **séquentiel** (un token après l'autre) | **parallèle** (tous les tokens d'un coup) |
+| Mémoire du passé | 1 vecteur $h_t$ de **taille fixe** (bottleneck) | accès **direct à tous** les tokens via [[attention-mechanism\|l'attention]] |
+| Distance entre 2 mots liés | = leur **distance dans la phrase** (signal dilué pas à pas) | **toujours 1 saut** d'attention, quelle que soit la distance |
+| Coût de calcul | $O(n)$ mais **en série** (non parallélisable) | $O(n^2)$ mais **parallélisable** d'un bloc |
+| Ordre des mots | **implicite** (donné par le parcours de la boucle) | **explicite** : il faut injecter un encodage positionnel |
+| Longueur de séquence | aucune limite **dure** (boucle autant qu'il faut), limite **molle** (oubli) | limite **dure** (fenêtre de contexte fixe) |
+
+Le point clé, contre-intuitif : le Transformer fait **plus** de calculs ($O(n^2)$ vs $O(n)$), mais il gagne parce que ces calculs sont **parallélisables**. On échange « peu de calculs mais en file indienne » (que le GPU déteste) contre « beaucoup de calculs mais tous en même temps » (que le GPU adore). La chaîne de dépendances $h_t \leftarrow h_{t-1}$ du RNN est précisément ce qui interdit cette parallélisation.
+
+> **Nuance inférence** : l'avantage de parallélisme du Transformer existe surtout à l'**entraînement** (toute la séquence connue d'avance). À la **génération** token par token, il redevient séquentiel — d'où l'importance du KV-cache (voir [[llm-inference-optimization]]).
+
 ### Mise en perspective
 
 Depuis 2017, les [[transformer-architecture|Transformers]] ont largement supplanté les RNN en NLP (parallélisables, meilleures dépendances longues). Les RNN restent pertinents pour le **streaming temps réel**, l'**embarqué/faible compute** et les **séries temporelles** modestes. Les modèles **état-espace** récents (Mamba, S4) réhabilitent l'idée récurrente avec de meilleures propriétés.
@@ -139,4 +156,5 @@ Depuis 2017, les [[transformer-architecture|Transformers]] ont largement supplan
 - [[transformer-architecture]]
 - [[attention-mechanism]]
 - [[embeddings-and-tokenization]]
+- [[llm-inference-optimization]]
 - [[reinforcement-learning]]

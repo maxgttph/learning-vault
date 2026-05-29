@@ -4,7 +4,7 @@ aliases: ["KV cache", "TurboQuant", "LLM inference"]
 tags: [llm, inference, optimization, kv-cache, quantization]
 created: 2026-05-26
 source: conversation with Claude (TurboQuant ICLR 2026, PolarQuant AISTATS 2026)
-related: ["[[attention-mechanism]]", "[[transformer-architecture]]"]
+related: ["[[attention-mechanism]]", "[[transformer-architecture]]", "[[recurrent-networks-and-lstm]]"]
 ---
 
 # Inférence des LLM : KV cache et TurboQuant
@@ -84,3 +84,4 @@ C'est typique des progrès "systémiques" qui s'accumulent en parallèle des pro
 
 - [[attention-mechanism]]
 - [[transformer-architecture]]
+- [[recurrent-networks-and-lstm]]
