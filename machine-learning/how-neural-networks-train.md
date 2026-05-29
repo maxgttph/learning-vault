@@ -4,7 +4,7 @@ aliases: ["entraînement", "training", "backpropagation"]
 tags: [machine-learning, training, gradient-descent, backpropagation]
 created: 2026-05-26
 source: conversation with Claude
-related: ["[[neural-networks-overview]]", "[[transformer-architecture]]", "[[attention-mechanism]]"]
+related: ["[[neural-networks-overview]]", "[[transformer-architecture]]", "[[attention-mechanism]]", "[[bias]]", "[[normalization]]"]
 ---
 
 # Comment s'entraîne un réseau de neurones
@@ -78,3 +78,5 @@ Exemple : $x = [1,\ 2]$, cible $y = 1$.
 - [[neural-networks-overview]]
 - [[transformer-architecture]]
 - [[attention-mechanism]]
+- [[bias]]
+- [[normalization]]
