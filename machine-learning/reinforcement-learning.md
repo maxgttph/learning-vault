@@ -4,7 +4,7 @@ aliases: ["RL", "apprentissage par renforcement", "reinforcement learning", "sup
 tags: [machine-learning, reinforcement-learning, supervised-learning, learning-paradigms, fundamentals]
 created: 2026-05-29
 source: conversation with Claude
-related: ["[[how-neural-networks-train]]", "[[neural-networks-overview]]", "[[transformer-architecture]]", "[[recurrent-networks-and-lstm]]"]
+related: ["[[how-neural-networks-train]]", "[[neural-networks-overview]]", "[[transformer-architecture]]", "[[recurrent-networks-and-lstm]]", "[[world-models]]"]
 ---
 
 # Reinforcement Learning vs Supervised Learning
@@ -115,3 +115,4 @@ Le détail de ces trois phases côté *mécanique d'entraînement* vit dans [[ho
 - [[neural-networks-overview]]
 - [[transformer-architecture]]
 - [[recurrent-networks-and-lstm]]
+- [[world-models]]
