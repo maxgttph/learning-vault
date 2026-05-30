@@ -61,13 +61,16 @@ Use `_templates/learning-sheet.md` as the structural skeleton. Fill it in by **s
 
 ## Math & formulas
 
-**Always write mathematical formulas in LaTeX** — Obsidian renders MathJax natively. Never put equations in code blocks (``` ```) or inline backticks: those stay as unrendered monospace text and are hard to read.
+**These rules apply ONLY to Obsidian files (vault notes).** They do NOT apply to chat replies — see the last bullet.
+
+**In Obsidian files, always write mathematical formulas in LaTeX** — Obsidian renders MathJax natively. Never put equations in code blocks (``` ```) or inline backticks: those stay as unrendered monospace text and are hard to read.
 
 - **Inline math**: single dollars — `$d_{\text{model}} \times d_k$`, `$O(n^2)$`, `$x + f(x)$`.
 - **Block math** (centered, own line): double dollars — `$$\text{Attention}(Q,K,V) = \text{softmax}\!\left(\frac{Q K^\top}{\sqrt{d_k}}\right) V$$`.
 - This covers **any** mathematical notation, including subscripts/superscripts (`$d_{\text{model}}$`, `$10^{13}$`), complexity (`$O(n^2)$`), Greek letters (`$\eta$`, `$\theta$`), operators (`$\cdot$`, `$\times$`, `$\odot$`, `$\top$`), and single variables in a math context (`$Q$`, `$W_Q$`, `$E^\top$`).
 - Use `\text{...}` for function names and labels inside math (`$\text{softmax}$`, `$\text{ReLU}$`).
 - **Keep in code blocks only what is NOT a formula**: ASCII flow diagrams (pipelines, layer anatomy), filenames (`.safetensors`), and code identifiers. Monospace is correct there.
+- **LaTeX is for notes only, not for chat.** Use LaTeX (`$...$` / `$$...$$`) **only when writing a vault note**. In normal conversation with the user, write math in plain readable notation instead (e.g. `d_model × d_k`, `O(n²)`, `η`) — unrendered LaTeX source is hard to read in the terminal.
 
 ## Linking discipline
 
