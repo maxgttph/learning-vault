@@ -4,7 +4,7 @@ aliases: ["bias", "biais"]
 tags: [machine-learning, neural-networks, fundamentals]
 created: 2026-05-29
 source: conversation with Claude
-related: ["[[normalization]]", "[[how-neural-networks-train]]", "[[transformer-architecture]]", "[[attention-mechanism]]"]
+related: ["[[normalization]]", "[[how-neural-networks-train]]", "[[transformer-architecture]]", "[[attention-mechanism]]", "[[distillation]]"]
 ---
 
 # Le biais dans les couches linéaires
@@ -109,3 +109,4 @@ Même quand le biais est supprimé, le $\gamma$ de RMSNorm (paramètre appris) f
 - [[how-neural-networks-train]]
 - [[transformer-architecture]]
 - [[attention-mechanism]]
+- [[distillation]]

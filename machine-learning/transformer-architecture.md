@@ -4,7 +4,7 @@ aliases: ["transformer", "GPT architecture"]
 tags: [machine-learning, transformer, llm, architecture]
 created: 2026-05-26
 source: conversation with Claude
-related: ["[[neural-networks-overview]]", "[[how-neural-networks-train]]", "[[attention-mechanism]]", "[[embeddings-and-tokenization]]", "[[llm-inference-optimization]]", "[[normalization]]", "[[bias]]", "[[recurrent-networks-and-lstm]]", "[[reinforcement-learning]]", "[[world-models]]"]
+related: ["[[neural-networks-overview]]", "[[how-neural-networks-train]]", "[[attention-mechanism]]", "[[embeddings-and-tokenization]]", "[[llm-inference-optimization]]", "[[normalization]]", "[[bias]]", "[[recurrent-networks-and-lstm]]", "[[reinforcement-learning]]", "[[world-models]]", "[[distillation]]"]
 ---
 # L'architecture Transformer
 
@@ -128,3 +128,4 @@ L'attention est l'innovation conceptuelle, mais c'est dans les MLP que vit la ma
 - [[recurrent-networks-and-lstm]]
 - [[reinforcement-learning]]
 - [[world-models]]
+- [[distillation]]
