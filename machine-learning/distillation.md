@@ -4,7 +4,7 @@ aliases: ["distillation", "knowledge distillation", "distillation de connaissanc
 tags: [machine-learning, llm, distillation, training, post-training]
 created: 2026-06-16
 source: conversation with Claude
-related: ["[[how-neural-networks-train]]", "[[embeddings-and-tokenization]]", "[[bias]]", "[[llm-inference-optimization]]", "[[transformer-architecture]]"]
+related: ["[[how-neural-networks-train]]", "[[embeddings-and-tokenization]]", "[[bias]]", "[[llm-inference-optimization]]", "[[transformer-architecture]]", "[[mixture-of-experts]]"]
 ---
 
 # La distillation des LLM
@@ -128,5 +128,6 @@ Complémentaires : on distille souvent *puis* on quantize.
 - [[bias]]
 - [[llm-inference-optimization]]
 - [[transformer-architecture]]
+- [[mixture-of-experts]]
 </content>
 </invoke>

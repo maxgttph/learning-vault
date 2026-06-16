@@ -4,7 +4,7 @@ aliases: ["attention", "self-attention", "multi-head attention"]
 tags: [machine-learning, attention, transformer, llm]
 created: 2026-05-26
 source: conversation with Claude
-related: ["[[transformer-architecture]]", "[[embeddings-and-tokenization]]", "[[llm-inference-optimization]]", "[[how-neural-networks-train]]", "[[normalization]]", "[[bias]]", "[[recurrent-networks-and-lstm]]"]
+related: ["[[transformer-architecture]]", "[[embeddings-and-tokenization]]", "[[llm-inference-optimization]]", "[[how-neural-networks-train]]", "[[normalization]]", "[[bias]]", "[[recurrent-networks-and-lstm]]", "[[mixture-of-experts]]"]
 ---
 
 # Le mécanisme d'attention (Q, K, V, O)
@@ -168,3 +168,4 @@ Une couche d'attention contient donc 4 matrices $8192 \times 8192 \approx 270\te
 - [[normalization]]
 - [[bias]]
 - [[recurrent-networks-and-lstm]]
+- [[mixture-of-experts]]
