@@ -71,7 +71,7 @@ Exemple : $x = [1,\ 2]$, cible $y = 1$.
 
 - Pourquoi SGD trouve-t-il des minima "larges" qui généralisent, plutôt que des minima étroits qui surapprennent ? Compris empiriquement, mal théoriquement.
 - Quand faut-il préférer DPO (plus simple) à RLHF (plus puissant) ?
-- Comment réduire le coût énergétique de l'entraînement à grande échelle ? (~100M$ pour GPT-4)
+- Comment réduire le coût énergétique de l'entraînement à grande échelle ? (~100M\$ pour GPT-4)
 
 ## Related notes
 
