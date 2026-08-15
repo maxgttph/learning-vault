@@ -1,0 +1,50 @@
+---
+title: "{{TITLE}}"
+aliases: []
+tags: []
+created: {{YYYY-MM-DD}}
+source: conversation with Claude
+lang: en
+translations:
+  - "[[{{SLUG}}.fr]]"
+related: []
+---
+
+# {{TITLE}}
+
+## TL;DR
+
+> One or two sentences capturing the core idea — what this is and why it matters.
+
+## Key concepts
+
+- **Concept A** — one-line definition.
+- **Concept B** — one-line definition.
+- **Concept C** — one-line definition.
+
+## Deep dive
+
+### Sub-topic 1
+
+Prose explanation. Keep it durable and self-contained — a future reader (you, in six months) should understand without re-reading the original conversation.
+
+Write any math in LaTeX, never in code blocks: inline `$d_{\text{model}} \times d_k$`, block `$$\text{softmax}\!\left(\frac{Q K^\top}{\sqrt{d_k}}\right) V$$`. Code blocks are only for ASCII diagrams, filenames, and code.
+
+### Sub-topic 2
+
+More prose.
+
+## Examples & analogies
+
+- Concrete example grounding the idea.
+- An analogy that makes it intuitive.
+
+## Open questions
+
+- What is still unclear or worth digging into next?
+- Adjacent topics worth a future sheet.
+
+## Related notes
+
+- [[other-note-1.en]]
+- [[other-note-2.en]]

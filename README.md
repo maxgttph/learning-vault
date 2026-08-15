@@ -14,15 +14,22 @@ The rules that govern note structure, naming, folder placement, and linking all 
 
 ```
 learning-vault/
-├── CLAUDE.md            # vault rules (read first if editing manually)
+├── CLAUDE.md                    # vault rules (read first if editing manually)
 ├── _templates/
-│   └── learning-sheet.md
-├── _index/              # reserved for future index pages
-└── <topic>/             # topic folders, created as you learn
-    └── note.md
+│   ├── learning-sheet.en.md
+│   └── learning-sheet.fr.md
+├── _index/                      # reserved for future index pages
+└── <topic>/                     # topic folders, created as you learn
+    └── <slug>/                  # one folder per note
+        ├── <slug>.en.md         # English sheet
+        └── <slug>.fr.md         # French sheet
 ```
 
 Topic folders are created lazily — the vault grows organically as you save notes.
+
+## Bilingual by design
+
+Every note exists once per supported language (`en` and `fr`), as two files inside the note's folder. They are translations of a single synthesis, not two independent write-ups, and they carry `lang:` and `translations:` in their frontmatter so each side knows its counterpart. Wiki-links stay within a language, so the Obsidian graph reads as one connected graph per language.
 
 ## Open in Obsidian
 
@@ -32,9 +39,9 @@ Topic folders are created lazily — the vault grows organically as you save not
 
 ## Useful conventions (full details in `CLAUDE.md`)
 
-- **Filenames**: lowercase `kebab-case.md`, no dates (date is in frontmatter).
-- **Folders**: lowercase `kebab-case`, max 2 levels deep.
-- **Wiki-links**: bidirectional — when note A links to note B, note B should also link back to A.
+- **Filenames**: `<slug>.<lang>.md`, lowercase `kebab-case`, no dates (date is in frontmatter). The slug is always the English one.
+- **Folders**: lowercase `kebab-case`, max 2 topic levels above the note folder.
+- **Wiki-links**: bidirectional and same-language — when note A links to note B, note B should also link back to A, in each language.
 - **`_`-prefixed folders** (`_templates`, `_index`) are infrastructure, not notes.
 
 ## The `/learn` skill

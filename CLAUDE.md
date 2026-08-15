@@ -8,18 +8,31 @@ The primary workflow:
 2. The user invokes `/learn` (or says "create a learning sheet" / equivalent).
 3. The LLM synthesizes the conversation into a new note using the rules below.
 
+## Languages
+
+The vault is **bilingual**. Supported languages: **`en`** (English) and **`fr`** (French).
+
+- **One file per supported language, per note.** A note is not finished until every supported language exists.
+- **English is canonical for naming**: the note folder and the file stem always use the English slug, whatever the language of the file.
+- **Write the English sheet first**, then the French one as a translation of the *same synthesis* — not a second, independently written note. The two must stay equivalent in content and structure.
+- **Section headings stay in English in both languages** (`## TL;DR`, `## Key concepts`, `## Deep dive`, …). Only the prose, the `title`, the `tags`, the `aliases` and the free text of `source` are translated.
+- The conversation's own language does **not** decide the sheet's language: both are always produced.
+
 ## Folder structure
 
 ```
 learning-vault/
-├── CLAUDE.md            # this file
-├── README.md            # human-facing intro
+├── CLAUDE.md                    # this file
+├── README.md                    # human-facing intro
 ├── _templates/
-│   └── learning-sheet.md
-├── _index/              # reserved for future index/MOC files
-└── <topic>/             # topic folders, created lazily
-    └── <sub-topic>/     # optional, only if a topic accumulates >~5 notes
-        └── note.md
+│   ├── learning-sheet.en.md
+│   └── learning-sheet.fr.md
+├── _index/                      # reserved for future index/MOC files
+└── <topic>/                     # topic folders, created lazily
+    └── <sub-topic>/             # optional, only if a topic accumulates >~5 notes
+        └── <slug>/              # one folder per note, named with the English slug
+            ├── <slug>.en.md
+            └── <slug>.fr.md
 ```
 
 - Topic folders are **created lazily** — never pre-seed empty categories.
@@ -28,9 +41,10 @@ learning-vault/
 ## Naming conventions
 
 - **Folders**: lowercase `kebab-case` (e.g. `cognitive-science/`, `ancient-history/`)
-- **Files**: lowercase `kebab-case.md` (e.g. `fermi-paradox.md`, `ship-of-theseus.md`)
+- **Note folder**: lowercase `kebab-case`, derived from the **English** title (e.g. `solar-eclipses/`, `ship-of-theseus/`)
+- **Files**: `<slug>.<lang>.md`, repeating the note folder's slug (e.g. `solar-eclipses/solar-eclipses.en.md`). Never `en.md` alone — Obsidian could not resolve short wiki-links between dozens of identically named files.
 - **No dates in filenames** — the date lives in frontmatter (`created:`)
-- **Nesting**: max 2 levels deep (`topic/sub-topic/note.md`). If you'd need a 3rd level, reconsider the taxonomy first.
+- **Nesting**: max 2 levels of *topic* folders above the note folder (`topic/sub-topic/<slug>/<slug>.en.md`). If you'd need a 3rd topic level, reconsider the taxonomy first.
 
 ## Where to file a new note
 
@@ -40,18 +54,21 @@ Decision procedure (do this in order, don't ask the user):
 2. **Reuse if it fits.** If an existing folder is a clear match for the topic, file the note there.
 3. **Create a sub-folder** only when the parent topic already holds several notes that cluster naturally (e.g. `philosophy/` has 6 notes, 3 about ethics → create `philosophy/ethics/`).
 4. **Create a new top-level folder** only when the topic genuinely doesn't belong anywhere existing. Prefer broad, durable names (`science`, not `quantum-stuff`).
-5. **Never** ask the user for the folder or filename. Decide based on the rules and tell them where you filed it.
+5. **Create the note folder** inside it, named with the English slug, and write one file per supported language in it.
+6. **Never** ask the user for the folder or filename. Decide based on the rules and tell them where you filed it.
 
 ## Writing the note
 
-Use `_templates/learning-sheet.md` as the structural skeleton. Fill it in by **synthesizing** the conversation — don't transcribe it. Specifically:
+Use `_templates/learning-sheet.<lang>.md` as the structural skeleton. Fill it in by **synthesizing** the conversation — don't transcribe it. Specifically:
 
 - **Frontmatter**:
-  - `title`: human-readable title (Title Case OK here)
-  - `tags`: free-form, lowercase, hyphenated (e.g. `tags: [philosophy, ethics, thought-experiment]`)
-  - `created`: today's ISO date (`YYYY-MM-DD`)
+  - `title`: human-readable title, in the file's own language (Title Case OK here)
+  - `tags`: free-form, lowercase, hyphenated, in the file's own language (e.g. `tags: [philosophy, ethics, thought-experiment]`)
+  - `created`: today's ISO date (`YYYY-MM-DD`) — the **same** date in every language of the note
   - `source`: `conversation with Claude` by default; override if the conversation cited specific books, papers, etc. — list them
-  - `related`: list of `[[wiki-links]]` to other notes in the vault
+  - `lang`: `en` or `fr`, matching the file's suffix
+  - `translations`: list of `[[wiki-links]]` to the same note in the other supported languages
+  - `related`: list of `[[wiki-links]]` to other notes in the vault, **in the same language as this file**
 - **TL;DR**: 1–2 sentences. Should stand on its own.
 - **Key concepts**: bullets, each a term and a one-line definition.
 - **Deep dive**: prose, organized by sub-heading. Keep it durable — written for the user reading it in six months, not as a chat recap.
@@ -81,7 +98,9 @@ Wiki-links build the knowledge graph over time. Before saving a new note:
 3. **Back-link**: in each referenced existing note, append the new note to its `related:` frontmatter list and its `## Related notes` section. Bidirectional linking matters — without it the graph stays sparse.
 4. Don't fabricate links. If no existing note is related, leave `related: []`.
 
-Wiki-link format: `[[filename-without-extension]]` (Obsidian's default short-form).
+Wiki-link format: `[[<slug>.<lang>]]` — the filename without its `.md` extension (Obsidian's default short-form), e.g. `[[solar-eclipses.en]]`.
+
+**Links stay inside their own language.** An `.en.md` file links only to `.en` targets, an `.fr.md` file only to `.fr` targets. The single exception is the `translations:` frontmatter key, which is the only bridge between languages. Consequence: back-linking must be done **in every language** — adding a link in the English sheet means adding the mirrored link in the French one too, and updating both languages of every referenced note.
 
 ## Tone & content rules
 
@@ -93,6 +112,8 @@ Wiki-link format: `[[filename-without-extension]]` (Obsidian's default short-for
 ## What not to do
 
 - Don't ask the user for the filename or folder — decide.
+- Don't leave a note in a single language — every supported language gets its file.
+- Don't link across languages (outside `translations:`), and don't name a language file `en.md` / `fr.md`.
 - Don't auto-generate MOCs, dashboards, or index pages (out of current scope).
 - Don't add Obsidian callouts (`> [!note]`) — out of scope.
 - Don't add Dataview queries — out of scope.
